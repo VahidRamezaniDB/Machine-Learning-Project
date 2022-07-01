@@ -120,8 +120,8 @@ def identify_key_elements(D_current: pd.DataFrame, C_current: int)->pd.DataFrame
 def custom_clustering(X_train: pd.DataFrame)-> pd.DataFrame:
 
     # Decleration of the algorithm's parameters.
-    DESIRED_CLUSTERS = 4
-    CONSTANT_NUMBER_G = 2
+    DESIRED_CLUSTERS = 3
+    CONSTANT_NUMBER_G = 10
     CONSTATN_NUMBER_K = 5
 
     ## 1
