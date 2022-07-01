@@ -106,12 +106,13 @@ C_current = math.floor(N/G)
 # Initial Computation of D_current 
 D_current = np.zeros((N,N))
 D_org_list = D_original.values.tolist()
+R_k_list = R_k.values.tolist()
 k2 = (K + 1)**2
 for i in range(N):
     for j in range(i, N):
         sum_val = 0
-        R_k_i = R_k.iloc[i]
-        R_k_j = R_k.iloc[j]
+        R_k_i = R_k_list[i]
+        R_k_j = R_k_list[j]
         for h in range(K):
             for p in range(K):                
                 sum_val += D_org_list[R_k_i[h]][R_k_j[p]]
