@@ -75,8 +75,45 @@ print("Y_test: " + str(Y_test.shape))
 
 # Identify key element.
 # This function is called in each iteration to identify key elements of the new clusters.
-def identify_key_elements(d_current: pd.DataFrame, C_current: int)->pd.DataFrame:
-    pass
+def identify_key_elements(D_current: pd.DataFrame, C_current: int)->pd.DataFrame:
+    
+    # Finding first key element which has the least average distance from others
+    first_key = math.inf
+    first_key_index = int()
+    m = len(D_current)
+    s = set()
+    k = list(np.arange(0,len(D_current),1))
+    for i in range(0,len(D_current)):
+        avg = 0
+        avg = sum(D_current.iloc[i].tolist())/m
+        if(avg<first_key):
+            first_key = avg
+            first_key_index = i
+    k.remove(first_key_index)
+    s.add(first_key_index)
+    n = 1
+    
+    # Doing iterations until we have enough clusters
+    while(n!=C_current):
+    
+        next_key_index = int()
+        min_dist = math.inf
+        max_dist = -math.inf
+    
+        # Finding next key element which has the most minimums distance to the current key elements
+        for index in k:
+            for j in range(0,len(s)):
+                if(D_current.iloc[index,j]<min_dist):
+                    min_dist = D_current.iloc[index,j]
+            if(min_dist>max_dist):
+                max_dist = min_dist
+                next_key_index = index
+        k.remove(next_key_index)
+        s.add(next_key_index)
+        n = n + 1
+    
+    # Returning all key elements(aka new clusters)
+    return pd.DataFrame(s)
 
 
 # This is the main routine of the algorithm.
