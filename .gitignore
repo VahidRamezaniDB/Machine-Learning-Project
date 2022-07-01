@@ -2,3 +2,4 @@
 .venv
 test.csv
 train.csv
+__pycache__
