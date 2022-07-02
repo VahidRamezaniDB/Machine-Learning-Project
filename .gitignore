@@ -1,4 +1,5 @@
 .vscode
 .venv
 *.csv
+*.sav
 __pycache__

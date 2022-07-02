@@ -219,5 +219,5 @@ def custom_clustering(X_train: pd.DataFrame, C_target: int)-> pd.DataFrame:
         counter += 1
 
     print('Done\n')
-    return pd.DataFrame(L)
+    return pd.DataFrame(L, columns=["Clusters"])
 
