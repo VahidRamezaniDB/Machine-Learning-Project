@@ -1,5 +1,4 @@
 .vscode
 .venv
-test.csv
-train.csv
+*.csv
 __pycache__
