@@ -48,12 +48,12 @@ def identify_key_elements(D_current: pd.DataFrame, C_current: int)->pd.DataFrame
     return pd.DataFrame(s, columns=['Clusters'])
 
 
-def custom_clustering(X_train: pd.DataFrame, C_target: int)-> pd.DataFrame:
+def custom_clustering(X_train: pd.DataFrame, C_target: int, K: int, G: int)-> pd.DataFrame:
 
     # Decleration of the algorithm's parameters.
     # DESIRED_CLUSTERS = 3
-    CONSTANT_NUMBER_G = 10
-    CONSTATN_NUMBER_K = 5
+    # CONSTANT_NUMBER_G = 10
+    # CONSTATN_NUMBER_K = 5
 
     ## 1
     # Computing distance matrix(D_original).
@@ -63,7 +63,7 @@ def custom_clustering(X_train: pd.DataFrame, C_target: int)-> pd.DataFrame:
     ##2
     # Finding K-Nearest data points.
     print('Finding K-Nearest data points\n')
-    K = CONSTATN_NUMBER_K
+    # K = CONSTATN_NUMBER_K
     R_k = []
     for idx ,x in D_original.iterrows():
         R_k.append(list(x.nsmallest(K + 1).keys()))
@@ -75,7 +75,7 @@ def custom_clustering(X_train: pd.DataFrame, C_target: int)-> pd.DataFrame:
     print('Initializing cluster labels\n')
     N = X_train.shape[0]
     L = list(range(0,N))
-    G = CONSTANT_NUMBER_G
+    # G = CONSTANT_NUMBER_G
     print('Initializing cluster labels completed\n')
     
     ##4
