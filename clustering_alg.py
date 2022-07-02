@@ -1,6 +1,7 @@
 import pandas as pd
 import math
 import numpy as np
+from pip import main
 from sklearn.model_selection import train_test_split
 from scipy.spatial import distance_matrix
 
@@ -267,3 +268,12 @@ def custom_clustering(X_train: pd.DataFrame)-> pd.DataFrame:
             temp.clear()
     print('Done\n')
     return pd.DataFrame(L)
+
+
+def main():
+    clusters = custom_clustering(X_train=X_train)
+    print(clusters)
+
+
+if __name__ == "__main__":
+    main()
