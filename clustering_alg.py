@@ -1,15 +1,15 @@
 import pandas as pd
 import math
 import numpy as np
-from pip import main
 from sklearn.model_selection import train_test_split
 from scipy.spatial import distance_matrix
+
 
 ### READING DATA
 
 # Reading data from a csv file.
 # The dataset contains fifa2017 player's stats
-df = pd.read_csv('https://raw.githubusercontent.com/navinniish/Datasets/master/fifa.csv')
+df = pd.read_csv('fifa.csv')
 
 ### NORMALIZING DATA
 
@@ -125,7 +125,7 @@ def identify_key_elements(D_current: pd.DataFrame, C_current: int)->pd.DataFrame
 def custom_clustering(X_train: pd.DataFrame)-> pd.DataFrame:
 
     # Decleration of the algorithm's parameters.
-    DESIRED_CLUSTERS = 3
+    DESIRED_CLUSTERS = 4
     CONSTANT_NUMBER_G = 10
     CONSTATN_NUMBER_K = 5
 
@@ -194,20 +194,30 @@ def custom_clustering(X_train: pd.DataFrame)-> pd.DataFrame:
         # Re-assigning cluster label for each data point
         print('Re-assigning cluster labels\n')
         for i in range(len(L)):
-            if i not in S_current_list:
-                # min = math.inf
-                # for j in D_current_list[i]:
-                #     if j in S_current_list and j < min:
-                #         min = j
-                temp = list(D_current_list[i])
+            if L[i] not in S_current_list:
+                temp = list(D_current_list[L[i]])
+                temp2 = temp.copy()
                 temp.sort(reverse=True)
-                while(len(temp)>0):
+                lenght = len(temp)
+                while(lenght > 0):
                     min_d = temp.pop()
-                    if min_d in S_current_list:
-                        L[i] = min_d
+                    lenght -= 1
+                    index = temp2.index(min_d)
+                    if index in S_current_list:
+                        L[i] = index
                         break
                 temp.clear()
 
+        ## Re-computing labels to make the be in range of C_current.
+        L_set = set(L)
+        counter = 0
+        for i in L_set:
+            for j in range(len(L)):
+                if L[j] == i:
+                    L[j] = counter
+            counter += 1
+
+        
         ## Re-computing D_current
         D_current = np.zeros((C_current, C_current))
         D_org_list = D_original.values.tolist()
@@ -216,7 +226,7 @@ def custom_clustering(X_train: pd.DataFrame)-> pd.DataFrame:
         # Computing "P"s. "P"s contains all data points in a certain cluster and all their neighbours.
         print('Computing Ps\n')
         P = []
-        for i in range(C_current):
+        for i in set(L):
             P_i = []
             for idx in range(len(L)):
                 if L[idx] == i:
@@ -244,33 +254,50 @@ def custom_clustering(X_train: pd.DataFrame)-> pd.DataFrame:
         # Re-computing other parameters
         C_previous = C_current
         C_current = math.floor(C_current/G)
-    
+        
 
     ##7
     # Cease condition satisfied.
     print('Cease condition satisfied.\nIdentifying key elements for the last time.\n')
-    S_current = identify_key_elements(D_current, C_current)
+    S_current = identify_key_elements(D_current, C_target)
 
     S_current_list = S_current[S_current.columns[0]].tolist()
     D_current_list = D_current.values.tolist()
 
+
     # Re-assigning cluster label for each data point
-    print('Re-assigning cluster label for each data point\n')
+    print('Re-assigning cluster labels\n')
     for i in range(len(L)):
-        if i not in S_current_list:
-            temp = list(D_current_list[i])
+        if L[i] not in S_current_list:
+            temp = list(D_current_list[L[i]])
+            temp2 = temp.copy()
             temp.sort(reverse=True)
-            while(len(temp)>0):
+            lenght = len(temp)
+            while(lenght > 0):
                 min_d = temp.pop()
-                if min_d in S_current_list:
-                    L[i] = min_d
+                lenght -= 1
+                index = temp2.index(min_d)
+                if index in S_current_list:
+                    L[i] = index
                     break
             temp.clear()
+
+
+    ## Re-computing labels to make the be in range of C_current.
+    L_set = set(L)
+    counter = 0
+    for i in L_set:
+        for j in range(len(L)):
+            if L[j] == i:
+                L[j] = counter
+        counter += 1
+
     print('Done\n')
     return pd.DataFrame(L)
 
 
 def main():
+    print("Strating...")
     clusters = custom_clustering(X_train=X_train)
     print(clusters)
 
