@@ -2,7 +2,6 @@ import re
 from clustering_tools import custom_clustering
 import pandas as pd
 import pickle
-import threading
 
 print("Loading model")
 
@@ -43,23 +42,21 @@ print(word_rep)
 train_df = pd.read_csv("train.csv")
 test_df = pd.read_csv("test.csv")
 
-print("Read files successfully")
-
-def replace_syn_in_data(comments, file_name):
-    print("thread is running...")
-    for i in range(len(comments)):
-        for idx in range(len(reduced_word_vecs_list)):
-            regstr = model.wv.index_to_key[idx]
-            comments[i] = re.sub(r"\b%s\b" % regstr , word_rep[words_lab_list[idx]], comments[i])
-    out_df = pd.DataFrame(tr_comments, columns=["Comment"]).to_csv(file_name)
+print("Read files successfully.\n Replacing words.")
 
 tr_comments = train_df["Comment"].tolist()
 ts_comments = test_df["Comment"].tolist()
+tr_topic = train_df["Topic"].tolist()
+ts_topic = test_df["Topic"].tolist()
 
-threads = []
-t = threading.Thread(target=replace_syn_in_data, args=(tr_comments,"normalized_train.csv"))
-threads.append(t)
-t.start()
-t = threading.Thread(target=replace_syn_in_data, args=(ts_comments,"normalized_test.csv"))
-threads.append(t)
-t.start()
+for idx in range(len(reduced_word_vecs_list)):
+    for i in range(len(tr_comments)):
+        regstr = model.wv.index_to_key[idx]
+        tr_comments[i] = re.sub(r"\b%s\b" % regstr , word_rep[words_lab_list[idx]], tr_comments[i])
+    for i in range(len(ts_comments)):
+        regstr = model.wv.index_to_key[idx]
+        ts_comments[i] = re.sub(r"\b%s\b" % regstr , word_rep[words_lab_list[idx]], ts_comments[i])
+
+print("replaced words. Writing output.")
+out_df = pd.DataFrame([tr_comments,tr_topic], index=["Comment", "Topic"]).T.to_csv("normalized_train.csv")
+out_df = pd.DataFrame([ts_comments,ts_topic], index=["Comment", "Topic"]).T.to_csv("normalized_test.csv")
